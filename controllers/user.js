@@ -125,7 +125,7 @@ export const updateUser = async (req, res, next) => {
                 next(new ErrorHandler("User not found for given id"), 404);
             }
             else {
-                await userModel.updateOne({ _id: id }, { $set: { username, lastModifiedAt: Date.now() } });
+                await userModel.updateOne({ _id: id }, { $set: { username, lastModifiedAt: Date.now() } }, { runValidators: true });
                 res.status(202).json({
                     success: true,
                     message: `Username updated successfully!`
