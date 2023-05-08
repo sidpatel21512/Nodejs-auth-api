@@ -1,16 +1,5 @@
 import mongoose from "mongoose";
 
-const activitySchema = new mongoose.Schema({
-    description: {
-        type: String,
-        required: true,
-    },
-    at: {
-        type: Date,
-        default: Date.now(),
-    }
-})
-
 const issueSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -62,10 +51,6 @@ const issueSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             required: true
         }
-    },
-    activity: {
-        type: [activitySchema],
-        default: []
     }
 });
 
