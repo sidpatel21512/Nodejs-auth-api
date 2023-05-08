@@ -38,25 +38,34 @@ const issueSchema = new mongoose.Schema({
     assignor: {
         username: {
             type: String,
+            required: false,
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
+            required: false,
         }
     },
     createdAt: {
         type: Date,
         default: Date.now()
     },
+    lastModifiedAt: {
+        type: Date,
+        default: Date.now(),
+    },
     createdBy: {
         username: {
             type: String,
+            required: true
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
+            required: true
         }
     },
     activity: {
         type: [activitySchema],
+        default: []
     }
 });
 
