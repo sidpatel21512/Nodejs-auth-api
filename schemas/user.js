@@ -8,21 +8,22 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        trim: true,
         required: [true, "Please provide email address."],
         unique: [true, "This email-id is already in use."],
     },
     password: {
         type: String,
-        minLength: [5, "Password is too short!"],
-        required: [true, 'Please provide password.']
+        required: [true, 'Please provide password.'],
+        select: false
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now()
     },
     lastModifiedAt: {
         type: Date,
-        required: true
+        default: Date.now(),
     }
 });
 
