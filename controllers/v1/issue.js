@@ -1,6 +1,6 @@
-import { ErrorHandler } from "../middlewares/error.js";
-import { issueModel } from "../models/issue.js";
-import { userModel } from "../models/user.js";
+import { ErrorHandler } from "../../middlewares/error.js";
+import { issueModel } from "../../models/v1/issue.js";
+import { userModel } from "../../models/v1/user.js";
 
 export const getIssue = async (req, res, next) => {
   const { id } = req.params

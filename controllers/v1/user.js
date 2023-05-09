@@ -1,7 +1,7 @@
-import { ErrorHandler } from "../middlewares/error.js";
-import { userModel } from "../models/user.js";
 import bcrypt from "bcrypt";
-import { sendCookies } from "../utils/cookies.js";
+import { ErrorHandler } from "../../middlewares/error.js";
+import { userModel } from "../../models/v1/user.js";
+import { removeCookies, sendCookies } from "../../utils/cookies.js";
 
 export const registerUser = async (req, res, next) => {
     const { email, username, password } = req.body;
@@ -56,7 +56,7 @@ export const loginUser = async (req, res, next) => {
                     next(new ErrorHandler("Invalid Password", 400))
                 }
                 else {
-                    sendCookies(res, 200, "User logged in successfully!", user);
+                    sendCookies(res, "ip_cookie", 200, "User logged in successfully!", user);
                 }
             }
         } catch (error) {
@@ -67,17 +67,13 @@ export const loginUser = async (req, res, next) => {
 
 export const logoutUser = (req, res, next) => {
     const { ip_cookie } = req.cookies;
+
     if (!ip_cookie) {
-        next(new ErrorHandler("Invalid Cookies"), 403);
+        next(new ErrorHandler("Unauthorized", 401));
     }
     else {
         try {
-            res.status(200).cookie('ip_cookie', null, {
-                maxAge: Date.now()
-            }).json({
-                success: true,
-                message: 'Successfully logged out!'
-            })
+            removeCookies(res, "ip_cookie", 200, "Successfully logged out!");
         } catch (error) {
             next(error);
         }

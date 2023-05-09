@@ -1,4 +1,4 @@
-import dotnev from'dotenv';
+import dotnev from 'dotenv';
 
 dotnev.config();
 

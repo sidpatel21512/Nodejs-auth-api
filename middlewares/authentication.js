@@ -1,12 +1,12 @@
-import { userModel } from "../models/user.js";
-import { ErrorHandler } from "./error.js";
 import jwt from "jsonwebtoken";
+import { userModel } from "../models/v1/user.js";
+import { ErrorHandler } from "./error.js";
 
 export const authenticationGuard = async (req, res, next) => {
     const { ip_cookie } = req.cookies;
 
     if (!ip_cookie) {
-        next(new ErrorHandler("Invalid Cookies", 403));
+        next(new ErrorHandler("Unauthorized", 401));
     }
     else {
         try {
