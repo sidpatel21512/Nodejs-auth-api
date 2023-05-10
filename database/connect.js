@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { MONGO_CONNECTION_STRING, MONGO_DB_NAME } from "../utils/constants.js";
 
 export const initializeDBConnection = () => {
-    mongoose.connect(MONGO_CONNECTION_STRING, {
-        dbName: MONGO_DB_NAME,
+    mongoose.connect(process.env.MONGO_CONN_STRING, {
+        dbName: process.env.MONGO_DB,
     }).then(() => {
         console.log('Database connected successfully');
     }).catch(e => console.error('Error occurred while connecting to the databse: ', e))
