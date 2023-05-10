@@ -103,6 +103,17 @@ export const getUser = async (req, res, next) => {
         next(error);
     }
 }
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await userModel.find({}).sort({ lastModifiedAt: 1 });
+        res.status(200).json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const updateUser = async (req, res, next) => {
     const { username } = req.body;
@@ -118,7 +129,7 @@ export const updateUser = async (req, res, next) => {
         try {
             const user = await userModel.findById(id);
             if (!user) {
-                next(new ErrorHandler("User not found for given id"), 404);
+                next(new ErrorHandler("User not found for given id", 404));
             }
             else {
                 await userModel.updateOne({ _id: id }, { $set: { username, lastModifiedAt: Date.now() } }, { runValidators: true });
@@ -132,3 +143,27 @@ export const updateUser = async (req, res, next) => {
         }
     }
 };
+
+export const deleteUser = async (req, res, next) => {
+    const { id } = req.params;
+
+    if (id === req.user._id.toString()) {
+        next(new ErrorHandler("Couldn't delete logged in user!", 409));
+        return;
+    }
+    try {
+        const user = await userModel.findOneAndDelete({ _id: id });
+
+        if (!user) {
+            next(new ErrorHandler("User does not exist", 404));
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User deleted successfully!'
+        });
+    } catch (error) {
+        next(error);
+    }
+}

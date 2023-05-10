@@ -2,6 +2,18 @@ import { ErrorHandler } from "../../middlewares/error.js";
 import { issueModel } from "../../models/v1/issue.js";
 import { userModel } from "../../models/v1/user.js";
 
+export const getAllIssues = async (req, res, next) => {
+  try {
+    const issues = await issueModel.find({}).sort({ lastModifiedAt: 1 });
+    res.status(200).json({
+      success: true,
+      issues
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getIssue = async (req, res, next) => {
   const { id } = req.params
 
@@ -26,7 +38,7 @@ export const createIssue = async (req, res, next) => {
   const { title, description, type, priority, status, assignorId } = req.body;
 
   if (!title?.trim()) {
-    next(new ErrorHandler("Please provide title of issue"), 400);
+    next(new ErrorHandler("Please provide title of issue", 400));
   } else {
     const createdById = req.user?._id;
     const createdByName = req.user?.username;
@@ -77,7 +89,7 @@ export const getUsersIssues = async (req, res, next) => {
 
     const user = userModel.findById(userId);
     if (!user) {
-      next(new ErrorHandler("Provided userid is invalid"), 400);
+      next(new ErrorHandler("Provided userid is invalid", 400));
     }
     else {
       const myIssues = await issueModel.find({
@@ -150,6 +162,25 @@ export const updateIssue = async (req, res, next) => {
     }
 
 
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteIssue = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await issueModel.findOneAndDelete({ _id: id });
+
+    console.log(user._id, req.user._id);
+    if (!user) {
+      next(new ErrorHandler("Issue does not exist", 404));
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Issue deleted successfully!'
+    });
   } catch (error) {
     next(error);
   }
