@@ -1,11 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
 import { initializeDBConnection } from './database/connect.js';
 import { ErrorMiddleware } from './middlewares/error.js';
 import userRouter from './routers/v1/user.js';
 import issueRouter from './routers/v1/issue.js';
-import cors from 'cors';
+import { swaggerOutput } from './swagger.js';
 
 dotenv.config();
 
@@ -21,10 +23,12 @@ app.use(cors({
 
 app.use('/api/v1/users', userRouter);// for registering user-rotes
 app.use('/api/v1/issues', issueRouter);//for registering issue-routes
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 app.listen(process.env.PORT, () => {
     console.log('Server started on ', process.env.PORT);
     initializeDBConnection();
 });
+
 
 app.use(ErrorMiddleware);
