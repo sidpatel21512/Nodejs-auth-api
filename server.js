@@ -20,7 +20,14 @@ app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true
-}))
+}));
+
+app.get('/',(_,res)=>{
+    res.status(200).json({
+        succes: 200,
+        message:'Hello Issue Portal!'
+    })
+});
 
 app.use('/api/v1/users', userRouter);// for registering user-rotes
 app.use('/api/v1/issues', issueRouter);//for registering issue-routes
