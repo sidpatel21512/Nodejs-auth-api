@@ -11,15 +11,25 @@ export const authenticationGuard = async (req, res, next) => {
     else {
         try {
             const decodedData = jwt.decode(ip_cookie, process.env.JWT_SECRET);
-            const user = await userModel.findById(decodedData?._id);
-            if (!user) {
-                next(new ErrorHandler("Unauthorized", 401));
-            } else {
-                req.user = user;
-                next();
+            const jwtIssuingTime = decodedData.iat * 1000;
+            const bufferTime = (15 * 60 * 1000);
+            const isJWTExpired = (jwtIssuingTime + bufferTime) < Date.now();
+
+            if (isJWTExpired) {
+                next(new ErrorHandler("Your token is expired.Please login again", 403));
+            }
+            else {
+                const user = await userModel.findById(decodedData?._id);
+
+                if (!user) {
+                    next(new ErrorHandler("Unauthorized", 401));
+                } else {
+                    req.user = user;
+                    next();
+                }
             }
         } catch (error) {
-            next(error);
+            next(new ErrorHandler(error.message, 401));
         }
     }
 }

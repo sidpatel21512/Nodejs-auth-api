@@ -14,7 +14,6 @@ const app = express();
 
 app.use(express.json());// for parsing requests-response in json format.
 app.use(cookieParser());// for parsing cookies through request headers.
-app.disable('x-powered-by'); //for preventing fingerprinting
 app.use(helmet())
 app.use(cors({
     origin: '*',
@@ -22,11 +21,11 @@ app.use(cors({
     credentials: true
 }));
 
-app.get('/',(_,res)=>{
+app.get('/', (_, res) => {
     res.status(200).json({
         succes: 200,
-        message:'Hello Issue Portal!'
-    })
+        message: 'Hello Issue Portal!'
+    });
 });
 
 app.use('/api/v1/users', userRouter);// for registering user-rotes
