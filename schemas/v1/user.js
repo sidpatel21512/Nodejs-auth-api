@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide username."],
         unique: [true, "This username already exists."],
+        trim: true
     },
     email: {
         type: String,
@@ -16,6 +17,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide password.'],
         select: false
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
     },
     createdAt: {
         type: Date,

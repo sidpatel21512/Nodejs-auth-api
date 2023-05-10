@@ -4,7 +4,7 @@ import { userModel } from "../../models/v1/user.js";
 
 export const getAllIssues = async (req, res, next) => {
   try {
-    const issues = await issueModel.find({}).sort({ lastModifiedAt: 1 });
+    const issues = await issueModel.find({}).sort({ lastModifiedAt: -1 });
     res.status(200).json({
       success: true,
       issues
@@ -15,7 +15,12 @@ export const getAllIssues = async (req, res, next) => {
 };
 
 export const getIssue = async (req, res, next) => {
-  const { id } = req.params
+  const { id } = req.params;
+
+  if (!id?.trim()) {
+    next(new ErrorHandler("Please provide issue id", 400));
+    return;
+  }
 
   try {
     const issue = await issueModel.findById(id);
@@ -85,11 +90,16 @@ export const createIssue = async (req, res, next) => {
 export const getUsersIssues = async (req, res, next) => {
   const { userId } = req.params;
 
+  if (!userId?.trim()) {
+    next(new ErrorHandler("Please provide userid", 400));
+    return;
+  }
+
   try {
 
     const user = userModel.findById(userId);
     if (!user) {
-      next(new ErrorHandler("Provided userid is invalid", 400));
+      next(new ErrorHandler("User does not exist for given id", 400));
     }
     else {
       const myIssues = await issueModel.find({
@@ -115,11 +125,15 @@ export const updateIssue = async (req, res, next) => {
   const { id } = req.params;
   const { title, description, type, priority, status, assignorId } = req.body;
 
+  if (!id?.trim()) {
+    next(new ErrorHandler("Please provide issueid", 400));
+    return;
+  }
 
   try {
     let finalPatchPayload = {
-      ...(title && { title }),
-      ...(description && { description }),
+      ...((typeof description === 'string') ? { title } : {}),
+      ...((typeof description === 'string') ? { description } : {}),
       ...(type && { type }),
       ...(priority && { priority }),
       ...(status && { status }),
@@ -169,11 +183,14 @@ export const updateIssue = async (req, res, next) => {
 
 export const deleteIssue = async (req, res, next) => {
   const { id } = req.params;
+  if (!id?.trim()) {
+    next(new ErrorHandler("Please provide issueid", 400));
+    return;
+  }
   try {
-    const user = await issueModel.findOneAndDelete({ _id: id });
+    const issue = await issueModel.findOneAndDelete({ _id: id });
 
-    console.log(user._id, req.user._id);
-    if (!user) {
+    if (!issue) {
       next(new ErrorHandler("Issue does not exist", 404));
       return;
     }

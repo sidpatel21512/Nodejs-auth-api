@@ -88,6 +88,10 @@ export const getMyUser = (req, res) => {
 }
 export const getUser = async (req, res, next) => {
     const { id } = req.params;
+    if (!id?.trim()) {
+        next(new ErrorHandler("Please provide userid", 400));
+        return;
+    }
     try {
         const user = await userModel.findById(id);
         if (!user) {
@@ -104,8 +108,11 @@ export const getUser = async (req, res, next) => {
     }
 }
 export const getAllUsers = async (req, res, next) => {
+    const activeQueryParam = req.query.active?.trim();
+    const isActive = activeQueryParam === 'false' ? false : true;
+
     try {
-        const users = await userModel.find({}).sort({ lastModifiedAt: 1 });
+        const users = await userModel.find({ isActive }).sort({ lastModifiedAt: 1 });
         res.status(200).json({
             success: true,
             users
@@ -116,14 +123,20 @@ export const getAllUsers = async (req, res, next) => {
 };
 
 export const updateUser = async (req, res, next) => {
-    const { username } = req.body;
+    const { username, isActive } = req.body;
     const { id } = req.params;
 
-    if (!username?.trim()) {
-        next(new ErrorHandler("Please provide username"), 400);
+    if (!id?.trim()) {
+        next(new ErrorHandler("Please provide userid", 400));
+        return;
     }
-    else if (!id?.trim()) {
-        next(new ErrorHandler("Please provide userid"), 400);
+    const finalPatchPayload = {
+        lastModifiedAt: Date.now(),
+        ...(username.trim() && { username }),
+        ...((typeof isActive === 'boolean') ? { isActive } : {})
+    };
+    if (Object.keys(finalPatchPayload).length === 1) {
+        next(new ErrorHandler("Please provide valid fields to update", 400));
     }
     else {
         try {
@@ -132,10 +145,10 @@ export const updateUser = async (req, res, next) => {
                 next(new ErrorHandler("User not found for given id", 404));
             }
             else {
-                await userModel.updateOne({ _id: id }, { $set: { username, lastModifiedAt: Date.now() } }, { runValidators: true });
+                await userModel.updateOne({ _id: id }, { $set: finalPatchPayload }, { runValidators: true });
                 res.status(202).json({
                     success: true,
-                    message: `Username updated successfully!`
+                    message: `User updated successfully!`
                 })
             }
         } catch (error) {
@@ -147,23 +160,27 @@ export const updateUser = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
     const { id } = req.params;
 
-    if (id === req.user._id.toString()) {
-        next(new ErrorHandler("Couldn't delete logged in user!", 409));
-        return;
+    if (!id?.trim()) {
+        next(new ErrorHandler("Please provide userid", 400));
     }
-    try {
-        const user = await userModel.findOneAndDelete({ _id: id });
+    else if (id === req.user._id.toString()) {
+        next(new ErrorHandler("Couldn't delete logged in user!", 409));
+    }
+    else {
+        try {
+            const user = await userModel.findOneAndDelete({ _id: id });
 
-        if (!user) {
-            next(new ErrorHandler("User does not exist", 404));
-            return;
+            if (!user) {
+                next(new ErrorHandler("User does not exist", 404));
+                return;
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'User deleted successfully!'
+            });
+        } catch (error) {
+            next(error);
         }
-
-        res.status(200).json({
-            success: true,
-            message: 'User deleted successfully!'
-        });
-    } catch (error) {
-        next(error);
     }
 }
