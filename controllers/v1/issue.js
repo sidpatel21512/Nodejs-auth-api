@@ -132,13 +132,13 @@ export const updateIssue = async (req, res, next) => {
 
   try {
     let finalPatchPayload = {
-      ...((typeof description === 'string') ? { title } : {}),
+      ...((typeof title === 'string') ? { title } : {}),
       ...((typeof description === 'string') ? { description } : {}),
       ...(type && { type }),
       ...(priority && { priority }),
       ...(status && { status }),
       lastModifiedAt: Date.now()
-    }
+    };
 
     if (assignorId) {
       const user = await userModel.findById(assignorId);

@@ -7,6 +7,8 @@ import { initializeDBConnection } from './database/connect.js';
 import { ErrorMiddleware } from './middlewares/error.js';
 import userRouter from './routers/v1/user.js';
 import issueRouter from './routers/v1/issue.js';
+import swaggerUiExpress from 'swagger-ui-express';
+import { swaggerDocument } from './docs/index.js';
 
 dotenv.config();
 
@@ -30,6 +32,7 @@ app.get('/', (_, res) => {
 
 app.use('/api/v1/users', userRouter);// for registering user-rotes
 app.use('/api/v1/issues', issueRouter);//for registering issue-routes
+app.use('/api-docs',swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocument));
 
 app.listen(process.env.PORT, () => {
     console.log('Server started on ', process.env.PORT);

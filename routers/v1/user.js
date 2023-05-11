@@ -12,7 +12,7 @@ import { authenticationGuard } from "../../middlewares/authentication.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/",authenticationGuard, getAllUsers);
+userRouter.get("/", authenticationGuard, getAllUsers);
 userRouter.get("/logout", logoutUser);
 userRouter.get("/myself", authenticationGuard, getMyUser);
 userRouter.get("/:id", authenticationGuard, getUser);

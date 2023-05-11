@@ -20,7 +20,6 @@ export const authenticationGuard = async (req, res, next) => {
             }
             else {
                 const user = await userModel.findById(decodedData?._id);
-
                 if (!user) {
                     next(new ErrorHandler("Unauthorized", 401));
                 } else {
