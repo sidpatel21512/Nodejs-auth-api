@@ -1,19 +1,22 @@
-export const commonResponse = {
-    "content": {
-        "application/json": {
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean"
-                    },
-                    "message": {
-                        "type": "string",
+export const commonResponse =(message="")=> {
+    return {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean"
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": message || "Success message"
+                        }
                     }
                 }
             }
         }
-    }
+    };
 };
 
 export const userPathInfo = {
@@ -74,7 +77,22 @@ export const userPathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -111,8 +129,23 @@ export const userPathInfo = {
             "responses": {
                 "200": {
                     "description": "Success",
-                    ...commonResponse
-                }
+                    ...(commonResponse())
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -140,7 +173,22 @@ export const userPathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -171,7 +219,22 @@ export const userPathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -218,7 +281,22 @@ export const userPathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -257,11 +335,26 @@ export const userPathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         },
         patch: {
-            summary: "Update a user by ID",
+            summary: "Update the username",
             tags: [
                 "Users"
             ],
@@ -277,17 +370,15 @@ export const userPathInfo = {
                 }
             ],
             requestBody: {
-                "description": "Users field to be updated(at least 1 field is required)",
+                "description": "Users field to be updated",
                 "content": {
                     "application/json": {
                         "schema": {
                             "type": "object",
                             "properties": {
                                 "username": {
-                                    "type": "string"
-                                },
-                                "isActive": {
-                                    "type": "boolean",
+                                    "type": "string",
+                                    "required": true,
                                 }
                             }
                         }
@@ -297,9 +388,137 @@ export const userPathInfo = {
             responses: {
                 "200": {
                     description: "Information about updation attempt",
-                    ...commonResponse
-                }
+                    ...(commonResponse())
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
+    "/users/active-status/{id}": {
+        patch: {
+            summary: "Update the user status",
+            tags: [
+                "Users"
+            ],
+            parameters: [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "The ID of the user to update",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            requestBody: {
+                "description": "Users field to be updated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "activeStatus": {
+                                    "type": "boolean",
+                                    "required": true,
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            responses: {
+                "200": {
+                    description: "Information about updation attempt",
+                    ...(commonResponse())
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
+            }
+        }
+    },
+    "/users/role/{id}": {
+        patch: {
+            summary: "Update the user role",
+            tags: [
+                "Users"
+            ],
+            parameters: [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "The ID of the user to update",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            requestBody: {
+                "description": "Users field to be updated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "role": {
+                                    "type": "string",
+                                    "required": true,
+                                    "enum": ['superAdmin', 'admin', 'user']
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            responses: {
+                "200": {
+                    description: "Information about updation attempt",
+                    ...(commonResponse())
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
+            }
+        }
+    }
 };

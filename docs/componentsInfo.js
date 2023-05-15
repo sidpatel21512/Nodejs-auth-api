@@ -18,11 +18,11 @@ export const componentsInfo = {
                     },
                     createdAt: {
                         type: "string",
-                        format: "date"
+                        example: "2023-05-15T12:18:13.056Z"
                     },
                     lastModifiedAt: {
                         type: "string",
-                        format: "date"
+                        example: "2023-05-15T12:18:13.056Z"
                     }
                 }
             },
@@ -52,11 +52,11 @@ export const componentsInfo = {
                     },
                     createdAt: {
                         type: "string",
-                        format: "date"
+                        example: "2023-05-15T12:18:13.056Z"
                     },
                     lastModifiedAt: {
                         type: "string",
-                        format: "date"
+                        example: "2023-05-15T12:18:13.056Z"
                     },
                     createdBy: {
                         type: "object",
@@ -110,13 +110,13 @@ export const componentsInfo = {
                 }
             }
         },
-        securitySchemes: {
-            cookieAuth: {
-                type: "apiKey",
-                in: "cookie",
-                name: "ip_cookie"
-            }
-        }
+        // securitySchemes: {
+        //     cookieAuth: {
+        //         type: "apiKey",
+        //         in: "cookie",
+        //         name: "ip_cookie"
+        //     }
+        // }
     },
     // security:{
     //     cookieAuth: []

@@ -16,11 +16,17 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please provide password.'],
+        minlength: 5,
         select: false
     },
     isActive: {
         type: Boolean,
-        default: true,
+        default: false,
+    },
+    role: {
+        type: String,
+        default: 'user',
+        enum: ['superAdmin','admin','user']
     },
     createdAt: {
         type: Date,

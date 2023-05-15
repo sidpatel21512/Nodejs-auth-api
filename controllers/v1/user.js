@@ -48,12 +48,15 @@ export const loginUser = async (req, res, next) => {
         try {
             const user = await userModel.findOne({ $or: [{ email: userId }, { username: userId }] }, "+password");
             if (!user) {
-                next(new ErrorHandler("User not found", 404))
+                next(new ErrorHandler("User not found", 404));
             }
             else {
                 const isPasswordSame = await bcrypt.compare(password, user.password);
                 if (!isPasswordSame) {
-                    next(new ErrorHandler("Invalid Password", 400))
+                    next(new ErrorHandler("Invalid Password", 400));
+                }
+                else if (!user.isActive) {
+                    next(new ErrorHandler("This user is disabled", 403));
                 }
                 else {
                     sendCookies(res, "ip_cookie", 200, "User logged in successfully!", user);
@@ -112,7 +115,7 @@ export const getAllUsers = async (req, res, next) => {
     const isActive = activeQueryParam === 'false' ? false : true;
 
     try {
-        const users = await userModel.find({ isActive }).sort({ lastModifiedAt: 1 });
+        const users = await userModel.find({ isActive }).sort({ lastModifiedAt: -1 });
         res.status(200).json({
             success: true,
             users
@@ -122,38 +125,36 @@ export const getAllUsers = async (req, res, next) => {
     }
 };
 
-export const updateUser = async (req, res, next) => {
-    const { username, isActive } = req.body;
+export const setUserName = async (req, res, next) => {
+    const { username } = req.body;
     const { id } = req.params;
 
     if (!id?.trim()) {
         next(new ErrorHandler("Please provide userid", 400));
-        return;
     }
+
+    else if (!username?.trim()) {
+        next(new ErrorHandler("Please provide valid username to update", 400))
+    }
+
     const finalPatchPayload = {
         lastModifiedAt: Date.now(),
-        ...(username.trim() && { username }),
-        ...((typeof isActive === 'boolean') ? { isActive } : {})
+        username
     };
-    if (Object.keys(finalPatchPayload).length === 1) {
-        next(new ErrorHandler("Please provide valid fields to update", 400));
-    }
-    else {
-        try {
-            const user = await userModel.findById(id);
-            if (!user) {
-                next(new ErrorHandler("User not found for given id", 404));
-            }
-            else {
-                await userModel.updateOne({ _id: id }, { $set: finalPatchPayload }, { runValidators: true });
-                res.status(202).json({
-                    success: true,
-                    message: `User updated successfully!`
-                })
-            }
-        } catch (error) {
-            next(error);
+
+    try {
+        const user = await userModel.findByIdAndUpdate(id, { $set: finalPatchPayload }, { runValidators: true });
+        if (!user) {
+            next(new ErrorHandler("User not found for given id", 404));
         }
+        else {
+            res.status(202).json({
+                success: true,
+                message: `User updated successfully!`
+            })
+        }
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -183,4 +184,69 @@ export const deleteUser = async (req, res, next) => {
             next(error);
         }
     }
+}
+
+export const setUserActiveStatus = async (req, res, next) => {
+    const { activeStatus } = req.body;
+    const { id } = req.params;
+
+
+    if (!id?.trim()) {
+        next(new ErrorHandler("Please provide userId", 400));
+    }
+    else if (activeStatus == null || activeStatus == undefined) {
+        next(new ErrorHandler("Please provide activeStatus", 400));
+    }
+    else {
+        const finalPatchPayload = { isActive: activeStatus, lastModifiedAt: Date.now() }
+        try {
+            const user = await userModel.findOneAndUpdate({ _id: id }, { $set: finalPatchPayload }, { runValidators: true });
+
+            if (!user) {
+                next(new ErrorHandler("User does not exist", 404));
+                return;
+            }
+
+            res.status(202).json({
+                success: true,
+                message: 'User status updated successfully!'
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+}
+
+export const setUserRole = async (req, res, next) => {
+    const { role } = req.body;
+    const { id } = req.params;
+
+
+    if (!id?.trim()) {
+        next(new ErrorHandler("Please provide userId", 400));
+    }
+    else if (!role?.trim()) {
+        next(new ErrorHandler("Please provide role", 400));
+    }
+    else {
+        try {
+            if (role === 'superAdmin') {
+                await userModel.findOneAndUpdate({ _id: req.user._id }, { $set: { role: 'user', lastModifiedAt: Date.now() } });
+            }
+            const user = await userModel.findOneAndUpdate({ _id: id }, { $set: { role, lastModifiedAt: Date.now() } }, { runValidators: true });
+
+            if (!user) {
+                next(new ErrorHandler("User does not exist", 404));
+            }
+            else {
+                res.status(202).json({
+                    success: true,
+                    message: 'User role updated successfully!'
+                });
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
