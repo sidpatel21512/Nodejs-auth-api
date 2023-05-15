@@ -25,10 +25,6 @@ const issueSchema = new mongoose.Schema({
         default: 'Backlog',
     },
     assignor: {
-        username: {
-            type: String,
-            required: false,
-        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: false,
@@ -43,10 +39,6 @@ const issueSchema = new mongoose.Schema({
         default: Date.now(),
     },
     createdBy: {
-        username: {
-            type: String,
-            required: true
-        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true

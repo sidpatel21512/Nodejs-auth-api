@@ -110,13 +110,13 @@ export const componentsInfo = {
                 }
             }
         },
-        securitySchemes: {
-            cookieAuth: {
-                type: "apiKey",
-                in: "cookie",
-                name: "ip_cookie"
-            }
-        }
+        // securitySchemes: {
+        //     cookieAuth: {
+        //         type: "apiKey",
+        //         in: "cookie",
+        //         name: "ip_cookie"
+        //     }
+        // }
     },
     // security:{
     //     cookieAuth: []

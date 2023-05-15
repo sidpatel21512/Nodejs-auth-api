@@ -30,7 +30,22 @@ export const issuePathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         },
         post: {
@@ -70,7 +85,22 @@ export const issuePathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -112,7 +142,22 @@ export const issuePathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         }
     },
@@ -151,7 +196,22 @@ export const issuePathInfo = {
                             }
                         }
                     }
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         },
         patch: {
@@ -184,7 +244,22 @@ export const issuePathInfo = {
                 "200": {
                     description: "Information about updation attempt",
                     ...commonResponse
-                }
+                },
+                "400": {
+                    "$ref": "#/responses/400"
+                },
+                "401": {
+                    "$ref": "#/responses/401"
+                },
+                "403": {
+                    "$ref": "#/responses/403"
+                },
+                "404": {
+                    "$ref": "#/responses/404"
+                },
+                "500": {
+                    "$ref": "#/responses/500"
+                },
             }
         },
         delete: {
@@ -208,7 +283,22 @@ export const issuePathInfo = {
                     description: "Information about deletion attempt",
                     ...commonResponse
                 }
-            }
+            },
+            "400": {
+                "$ref": "#/responses/400"
+            },
+            "401": {
+                "$ref": "#/responses/401"
+            },
+            "403": {
+                "$ref": "#/responses/403"
+            },
+            "404": {
+                "$ref": "#/responses/404"
+            },
+            "500": {
+                "$ref": "#/responses/500"
+            },
         }
     }
 }
